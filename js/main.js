@@ -15,7 +15,7 @@ var airports = null;
 
 
 // 4. build up a set of colors from colorbrewer's dark2 category
-var colors = chroma.scale('Purples').mode('lch').colors(2);
+var colors = chroma.scale('Paired').mode('lch').colors(3);
 
 // 5. dynamically append style classes to this page. This style classes will be used for colorize the markers.
 for (i = 0; i < 9; i++) {
@@ -28,13 +28,14 @@ airports = L.geoJson.ajax("assets/airports.geojson", {
     // Then each (point) feature will bind a popup window.
     // The content of the popup window is the value of `feature.properties.company`
     onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties.CNTL_TWR);
+        layer.bindPopup(feature.properties.AIRPT_NAME);
     },
     pointToLayer: function (feature, latlng) {
         var id = 0;
-        if (feature.properties.CNTL_TWR == "N") { id = 0; }
-        else { id = 1;} //
-        return L.marker(latlng, {icon: L.divIcon({className: 'fa fa-plane marker-color-' + (id + 1).toString() })});
+        if (feature.properties.TOT_ENP > 1000000) {id = 2; }
+        else if (feature.properties.CNTL_TWR == "Y") { id = 1; }
+        else { id = 0;} //
+        return L.marker(latlng, {icon: L.divIcon({className: 'fa fa-circle marker-color-' + (id + 1).toString() })});
     },
     attribution: 'Control Tower Data &copy; Map Cruzin | Oregon counties &copy; Oregon Explorer | Base Map &copy; CartoDB | Made By Anna Ballasiotes'
 }).addTo(mymap);
@@ -84,22 +85,16 @@ legend.onAdd = function () {
 
     // Create Div Element and Populate it with HTML
     var div = L.DomUtil.create('div', 'legend');
-    div.innerHTML += '<b>Airports</b><br />';
+    div.innerHTML += '<b>Airport Density per State</b><br />';
     div.innerHTML += '<i style="background: ' + colors[4] + '; opacity: 0.5"></i><p>19+</p>';
     div.innerHTML += '<i style="background: ' + colors[3] + '; opacity: 0.5"></i><p>14-18</p>';
     div.innerHTML += '<i style="background: ' + colors[2] + '; opacity: 0.5"></i><p>11-13</p>';
     div.innerHTML += '<i style="background: ' + colors[1] + '; opacity: 0.5"></i><p> 6-10</p>';
     div.innerHTML += '<i style="background: ' + colors[0] + '; opacity: 0.5"></i><p> 0- 5</p>';
-    div.innerHTML += '<hr><b>Company<b><br />';
-    div.innerHTML += '<i class="fa fa-plane marker-color-1"></i><p> New Cingular</p>';
-    div.innerHTML += '<i class="fa fa-plane marker-color-2"></i><p> Cello</p>';
-    div.innerHTML += '<i class="fa fa-plane marker-color-3"></i><p> RCC Minnesota</p>';
-    div.innerHTML += '<i class="fa fa-plane marker-color-4"></i><p> Verizon</p>';
-    div.innerHTML += '<i class="fa fa-plane marker-color-5"></i><p> US Cellular</p>';
-    div.innerHTML += '<i class="fa fa-plane marker-color-6"></i><p> Hood River Cellular</p>';
-    div.innerHTML += '<i class="fa fa-plane marker-color-7"></i><p> Medford Cellular</p>';
-    div.innerHTML += '<i class="fa fa-plane marker-color-8"></i><p> Oregon RSA</p>';
-    div.innerHTML += '<i class="fa fa-plane marker-color-9"></i><p> Salem Cellular</p>';
+    div.innerHTML += '<hr><b>Airports<b><br />';
+    div.innerHTML += '<i class="fa fa-plane marker-color-1"></i><p> No Control Tower</p>';
+    div.innerHTML += '<i class="fa fa-plane marker-color-2"></i><p> With Control Tower</p>';
+    div.innerHTML += '<i class="fa fa-plane marker-color-3"></i><p> Control Tower & greater than 1,000,000 ENP</p>';
     // Return the Legend div containing the HTML content
     return div;
 };
