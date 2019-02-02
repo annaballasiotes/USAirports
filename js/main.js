@@ -15,7 +15,7 @@ var airports = null;
 
 
 // 4. build up a set of colors from colorbrewer's dark2 category
-var colors = chroma.scale('Dark2').mode('lch').colors(9);
+var colors = chroma.scale('Purples').mode('lch').colors(2);
 
 // 5. dynamically append style classes to this page. This style classes will be used for colorize the markers.
 for (i = 0; i < 9; i++) {
@@ -28,35 +28,32 @@ airports = L.geoJson.ajax("assets/airports.geojson", {
     // Then each (point) feature will bind a popup window.
     // The content of the popup window is the value of `feature.properties.company`
     onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties.company);
+        layer.bindPopup(feature.properties.CNTL_TWR);
     },
     pointToLayer: function (feature, latlng) {
         var id = 0;
-        if (feature.properties.company == "New Cingular") { id = 0; }
-        else if (feature.properties.company == "Cellco")  { id = 1; }
-        else if (feature.properties.company == "RCC Minnesota")  { id = 2; }
-        else if (feature.properties.company == "Verizon")  { id = 3; }
-        else if (feature.properties.company == "US Cellular")  { id = 4; }
-        else if (feature.properties.company == "Hood River Cellular")  { id = 5; }
-        else if (feature.properties.company == "Medford Cellular")  { id = 6; }
-        else if (feature.properties.company == "Oregon RSA")  { id = 7; }
-        else { id = 8;} // "Salem Cellular"
+        if (feature.properties.CNTL_TWR == "N") { id = 0; }
+        else { id = 1;} //
         return L.marker(latlng, {icon: L.divIcon({className: 'fa fa-plane marker-color-' + (id + 1).toString() })});
     },
-    attribution: 'Cell Tower Data &copy; Map Cruzin | Oregon counties &copy; Oregon Explorer | Base Map &copy; CartoDB | Made By Bo Zhao'
+    attribution: 'Control Tower Data &copy; Map Cruzin | Oregon counties &copy; Oregon Explorer | Base Map &copy; CartoDB | Made By Anna Ballasiotes'
 }).addTo(mymap);
 
 
+var states = null;
+states = L.geoJson.ajax("assets/us-states.geojson", {
+    style: style
+}).addTo(mymap);
 
 // 6. Set function for color ramp
-colors = chroma.scale('OrRd').colors(5); //colors = chroma.scale('RdPu').colors(5);
+colors = chroma.scale('Purples').colors(5); //colors = chroma.scale('RdPu').colors(5);
 
-function setColor(density) {
+function setColor(count) {
     var id = 0;
-    if (density > 18) { id = 4; }
-    else if (density > 13 && density <= 18) { id = 3; }
-    else if (density > 10 && density <= 13) { id = 2; }
-    else if (density > 5 &&  density <= 10) { id = 1; }
+    if (count > 18) { id = 4; }
+    else if (count > 13 && count <= 18) { id = 3; }
+    else if (count > 10 && count <= 13) { id = 2; }
+    else if (count > 5 &&  count <= 10) { id = 1; }
     else  { id = 0; }
     return colors[id];
 }
@@ -76,10 +73,7 @@ function style(feature) {
 
 // 8. Add state polygons
 // create state variable, and assign null to it.
-var states = null;
-states = L.geoJson.ajax("assets/us-states.geojson", {
-    style: style
-}).addTo(mymap);
+
 
 
 // 9. Create Leaflet Control Object for Legend
