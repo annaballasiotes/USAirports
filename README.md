@@ -8,4 +8,4 @@ The U.S. state shapefile was aquired from Mike Bostock of D3. Within each state,
 
 [Click here to view the map.](https://annaballasiotes.github.io/USAirports)
 
-Acknowledgements: Leaflet, Mike Bostock, USGS, CartoDB, and Bo Zhao.
+Acknowledgements: Leaflet, Mike Bostock, USGS, CartoDB, and Bo Zhao.  
